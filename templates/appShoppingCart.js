@@ -3,10 +3,9 @@
 	var app = angular.module('store', ['ngCookies']);
 
 	app.controller('StoreController', ['$scope','$cookies', function($scope,$cookies){
-	
 		$scope.products = productsData;
 		$scope.cart = [];
-	  $scope.total = 0;
+		$scope.total = 0;
 	  /*
 		if ($cookieStore.get('cart') !== null) {
 		 		$scope.cart =  $cookieStore.get('cart');
@@ -40,7 +39,7 @@
 		 		}
 		 	}
 		 	var expireDate = new Date();
-      expireDate.setDate(expireDate.getDate() + 1);
+			expireDate.setDate(expireDate.getDate() + 1);
 		 	$cookies.putObject('cart', $scope.cart,  {'expires': expireDate});
 		 	$scope.cart = $cookies.getObject('cart');
 		 

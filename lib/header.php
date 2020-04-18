@@ -18,15 +18,17 @@
 	<link rel="stylesheet" href="<?php echo $dir ?>lib/css/font-awesome.min.css"/>
 	<script src="<?php echo $dir ?>lib/js/jquery-3.4.1.js"></script>
 	<script src="<?php echo $dir ?>lib/js/jquery.min.js"></script>
-		<script src="<?php echo $dir ?>lib/js/angular.js"></script>
+	<script src="<?php echo $dir ?>lib/js/angular.js"></script>
+	<!--script src="<?php echo $dir ?>lib/js/angular.min.js"></script-->
 	<script src="<?php echo $dir ?>lib/js/angular-route.js"></script>
+	<script src="<?php echo $dir ?>lib/js/angular-sanitize.min.js" data-require="angularjs@1.4" data-semver="1.4.4"></script>
+	<script src="<?php echo $dir ?>lib/js/angular-cookies.min.js" data-require="angularjs@1.4" data-semver="1.4.4"></script>
+	<script src="<?php echo $dir ?>lib/js/angular-animate.min.js" data-require="angularjs@1.4" data-semver="1.4.4"></script>
+	
 	<script src="<?php echo $dir ?>lib/js/bootstrap.min.js"></script>
 
-	<!--script src="lib/js/angular.min.js"></script-->
-	
 	<!--script src="lib/js/bootstrap.js"></script-->
-	
-	
+		
 	<script src="<?php echo $dir ?>lib/js/jquery.dataTables.min.js"></script>
 	<script src="<?php echo $dir ?>lib/js/angular-datatables.min.js"></script>
 	<script src="<?php echo $dir ?>app.js"></script>
@@ -64,7 +66,7 @@
                     <a class="nav-link" href="<?php echo $dir ?>contact.html">Contact</a>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
+            <form class="form-inline my-2 my-lg-0" >
                 <div class="input-group input-group-sm">
                     <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Search...">
                     <div class="input-group-append">
@@ -73,10 +75,16 @@
                         </button>
                     </div>
                 </div>
-                <a class="btn btn-success btn-sm ml-3" href="cart.html">
-                    <i class="fa fa-shopping-cart"></i> Cart
-                    <span class="badge badge-light">3</span>
-                </a>
+				<!--div ng-controller="StoreController" >
+					<div ng-show="cart.length !== 0">
+						<a class="btn btn-success btn-sm ml-3"  href="cart.html">
+							<i class="fa fa-shopping-cart"></i> Cart
+							<div ng-repeat="a in cart" >
+								<span class="badge badge-light"  >{{a.count}}</span>
+							</div>
+						</a>
+					</div>
+				</div-->
 				<?php
 				if(!isset($_SESSION["name"])){
 				?>
@@ -88,7 +96,7 @@
 				<div class="input-group input-group-sm">
 					<div class="input-group-append">
 						<span style="color:white"><?php echo $_SESSION["name"];?></span>
-						<a href="config/logout.php"><button type="button" class="btn btn-info btn-md">Logout</button></a>
+						<a href="<?php echo $dir?>config/logout.php"><button type="button" class="btn btn-info btn-md">Logout</button></a>
 					</div>
 				</div>
 				<?php
@@ -110,9 +118,11 @@
 					</div>
 					<div class="panel-body modal-body">
 						<form method="post" ng-submit="submitLogin()">
+						
 							<div class="form-group">
 								<label>Enter Your Email</label>
 								<input type="text" name="email" ng-model="loginData.email" class="form-control" />
+								<input type="hidden" name="dir" ng-init="loginData.dir='<?php echo $dir ?>'" />
 							</div>
 							<div class="form-group">
 							   <label>Enter Your Password</label>
@@ -146,27 +156,31 @@
 					</div>
 					<div class="panel-body modal-body">
 						<form method="post" ng-submit="submitRegister()">
-						  <div class="form-group">
-						   <label>Enter Your First Name</label>
-						   <input type="text" name="name" ng-model="registerData.firstname" class="form-control" />
-						  </div>
-						  <div class="form-group">
-						   <label>Enter Your Last Name</label>
-						   <input type="text" name="lastname" ng-model="registerData.lastname" class="form-control" />
-						  </div>
-						  <div class="form-group">
-						   <label>Enter Your Email</label>
-						   <input type="text" name="email" ng-model="registerData.email" class="form-control" />
-						  </div>
-						  <div class="form-group">
-						   <label>Enter Your Password</label>
-						   <input type="password" name="password" ng-model="registerData.password" class="form-control" />
-						  </div>
-						  <div class="form-group" align="center">
-						   <input type="submit" name="register" class="btn btn-primary" value="Register" />
-						   <br />
-						   <input type="button" name="login_link" data-toggle="modal" data-target="#ingresar" class="btn btn-primary btn-link" ng-click="showLogin()" value="Login" />
-						  </div>
+							<div class="form-group">
+								<label>Enter Your First Name</label>
+								<input type="text" name="name" ng-model="registerData.firstname" class="form-control" />
+							</div>
+							<div class="form-group">
+								<label>Enter Your Last Name</label>
+								<input type="text" name="lastname" ng-model="registerData.lastname" class="form-control" />
+							</div>
+							<div class="form-group">
+								<label>Enter Your Address Location</label>
+								<input type="text" name="location" ng-model="registerData.location" class="form-control" />
+							</div>
+							<div class="form-group">
+								<label>Enter Your Email</label>
+								<input type="text" name="email" ng-model="registerData.email" class="form-control" />
+							</div>
+							<div class="form-group">
+								<label>Enter Your Password</label>
+								<input type="password" name="password" ng-model="registerData.password" class="form-control" />
+							</div>
+							<div class="form-group" align="center">
+								<input type="submit" name="register" class="btn btn-primary" value="Register" />
+								<br />
+								<input type="button" name="login_link" data-toggle="modal" data-target="#ingresar" class="btn btn-primary btn-link" ng-click="showLogin()" value="Login" />
+							</div>
 						</form>
 					</div>
 				</div>

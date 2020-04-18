@@ -1,101 +1,146 @@
 <?php
 session_start();
+if(isset($_SESSION['id'])){
+echo "<script>
+	id = $_SESSION[id];
+</script>";
+}else{
+echo "<script>
+	id = 0;
+</script>";	
+}
 ?>
 <!DOCTYPE html>
 <html>
 <?php
 $dir="";
-include 'lib/header.php';
+include $dir.'lib/header.php';
 ?>
+
 <body ng-app="sampleApp">
 <br />
-   <!--h3 align="center">Login or Register</h3>
-  <br />
-
-  <div ng-app="login_register_app" ng-controller="login_register_controller" class="container form_style">
-   <?php
-   //if(!isset($_SESSION["name"])){
-	    
-   ?>
-   <div class="alert  {{alertClass}} alert-dismissible" ng-show="alertMsg">
-    <a href="#" class="close" ng-click="closeMsg()" aria-label="close">&times;</a>
-    {{alertMessage}}
-   </div>
-   
-   <div class="panel panel-default" ng-show="login_form">
-    <div class="panel-heading">
-     <h3 class="panel-title">Login</h3>
-    </div>
-    <div class="panel-body">
-     <form method="post" ng-submit="submitLogin()">
-      <div class="form-group">
-       <label>Enter Your Email</label>
-       <input type="text" name="email" ng-model="loginData.email" class="form-control" />
-      </div>
-      <div class="form-group">
-       <label>Enter Your Password</label>
-       <input type="password" name="password" ng-model="loginData.password" class="form-control" />
-      </div>
-      <div class="form-group" align="center">
-       <input type="submit" name="login" class="btn btn-primary" value="Login" />
-       <br />
-       <input type="button" name="register_link" class="btn btn-primary btn-link" ng-click="showRegister()" value="Register" />
-      </div>
-     </form>
-    </div>
-   </div>
-
-   <div class="panel panel-default" ng-show="register_form">
-    <div class="panel-heading">
-     <h3 class="panel-title">Register</h3>
-    </div>
-    <div class="panel-body">
-     <form method="post" ng-submit="submitRegister()">
-      <div class="form-group">
-       <label>Enter Your First Name</label>
-       <input type="text" name="name" ng-model="registerData.firstname" class="form-control" />
-      </div>
-	  <div class="form-group">
-       <label>Enter Your Last Name</label>
-       <input type="text" name="name" ng-model="registerData.lastname" class="form-control" />
-      </div>
-      <div class="form-group">
-       <label>Enter Your Email</label>
-       <input type="text" name="email" ng-model="registerData.email" class="form-control" />
-      </div>
-      <div class="form-group">
-       <label>Enter Your Password</label>
-       <input type="password" name="password" ng-model="registerData.password" class="form-control" />
-      </div>
-      <div class="form-group" align="center">
-       <input type="submit" name="register" class="btn btn-primary" value="Register" />
-       <br />
-       <input type="button" name="login_link" class="btn btn-primary btn-link" ng-click="showLogin()" value="Login" />
-      </div>
-     </form>
-    </div>
-   </div>
-   <?php
-   //}else{
-   ?>
-   <div class="panel panel-default">
-    <div class="panel-heading">
-     <h3 class="panel-title">Welcome to system</h3>
-    </div>
-    <div class="panel-body">
-     <h1>Welcome - <?php //echo $_SESSION["name"];?></h1>
-     <a href="config/logout.php">Logout</a>
-    </div>
-   </div>
-   <?php
-   //}
-   ?>
-
-  </div-->
-
-<div class="container">
+<div class="container" ng-controller="StoreController">
     <h3 class="h3">CheapMarket </h3>
-    <div class="row">
+		<!--div ng-show="cart.length !== 0"-->
+	<div class="row" ng-show="showCart(cart)">
+		<h1>CART</h1>
+			<div class="col-md-3 col-sm-6" ng-repeat="c in cart">
+				<div class="product-grid" >
+					<h4>{{c.product_name}} |  <span style="color:blue"> {{c.count}} </span>
+					| {{c.price*c.count | currency}}</h4>
+					<input class="btn btn-danger" type="button" ng-click="removeItemCart(c)" value="Remove" />
+				</div>
+			</div>
+			<div class="product-grid" >
+		Total : {{totalC}} {{total2 | currency}}
+		<input class="btn btn-success" type="button" ng-click="BuyCart(cart)" value="Buy" />
+		</div>
+	</div>
+	<div class="row" >
+		<div class="col-md-3 col-sm-6" ng-repeat="pro in proData track by pro.id">
+			<div class="product-grid" >
+				<div class="product-image">
+					<a href="#">
+                        <img class="pic-1" src="img/{{pro.product_name}}.jpg">
+                        <img class="pic-2" src="img/{{pro.product_name}}2.jpg">
+                    </a>
+                    <ul class="social">
+                        <li><!--<a href="" data-tip="Quick View"><i class="fa fa-search"></i></a>--></li>
+                        <li><!--<a href="" data-tip="Add to Wishlist"><i class="fa fa-shopping-bag"></i></a>--></li>
+                        <li ng-click="addItemToCart(pro)"><a href="" data-tip="Add to Cart" ><i class="fa fa-shopping-cart"></i></a></li>
+                    </ul>
+                    <span class="product-new-label">Sale</span>
+                    <span class="product-discount-label"><!--20%--></span>
+					<ul class="rating">
+						<li class="fa fa-star"></li>
+						<li class="fa fa-star"></li>
+						<li class="fa fa-star"></li>
+						<li class="fa fa-star"></li>
+						<li class="fa fa-star disable"></li>
+					</ul>
+					<div class="product-content">
+						<h3 class="title"><a href="#">{{pro.product_name}}</a></h3>
+						<div class="price">{{pro.price | currency}}
+							<!--span>$20.00</span-->
+						</div>
+						<?php
+						if(isset($_SESSION["name"])){
+						?>
+						<a class="add-to-cart" ng-click="addItemToCart(pro)" href="">+ Add To Cart</a>
+						<?php
+						}
+						?>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<!--modal invoke -->
+	<div id="invoke" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="panel panel-default" >
+					<div class="panel-heading modal-header">
+						<h3 class="panel-title modal-title">{{invokeTitle}}</h3>
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+					</div>
+					<div class="panel-body modal-body">
+					
+						<form method="post" ng-submit="submitAccept(cart, tot)">
+							<div class="table-responsive" style="overflow-x: unset;">
+								<table class="table table-bordered table-striped">
+									<thead>
+										<tr>
+										   <th>Quantity</th>
+										   <th>Product Name</th>
+										   <th>Price</th>
+										   <th>SubTotal</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="art in cart">
+										   <td>{{art.count}}</td>
+										   <td>{{art.product_name}}</td>
+										   <td>{{art.price}}</td>
+										   <td>{{art.count*art.price | currency}}</td>
+										</tr>
+										<tr colspan="4">
+											<td >Total :{{tot | currency}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+
+							<div class="form-group">
+							   <label>Full Name</label>
+							   <input type="text" name="first_name" ng-model="first_name" class="form-control" />
+							   <input type="text" name="last_name" ng-model="last_name" class="form-control" />
+							</div>
+							<div class="form-group">
+							   <label>Address</label>
+							   <input type="text" name="location" ng-model="location" class="form-control" />
+							</div>
+							<div class="form-group" ng-show="showAccepted">
+							   <label>Accepted!{{invoke_number}}</label>
+							   <br/>
+							   <label>Payment Method</label>
+							   <input type="text" name="payment" ng-model="payment" class="form-control" />
+							</div>
+							<div class="form-group" align="center">
+							   <input type="submit" name="accept" class="btn btn-primary" value="{{invoke_button}}" />
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+    <!--div class="row">
         <div class="col-md-3 col-sm-6">
             <div class="product-grid">
                 <div class="product-image">

@@ -6,7 +6,8 @@ session_start();
 <html>
 <?php
 $dir="../";
-include '../lib/header.php';
+include $dir.'lib/header.php';
+if(isset($_SESSION['admin']) && $_SESSION['admin']!=0){
 ?>
 <body ng-app="sampleApp" ng-controller="crudController">
 	<div class="table-responsive" style="overflow-x: unset;">
@@ -15,6 +16,8 @@ include '../lib/header.php';
 			  <tr>
 			   <th>Product Name</th>
 			   <th>Description</th>
+			   <th></th>
+			   <th></th>
 			  </tr>
 			 </thead>
 			<tbody>
@@ -22,6 +25,7 @@ include '../lib/header.php';
 				   <td>{{pro.product_name}}</td>
 				   <td>{{pro.description}}</td>
 				   <td><button type="button" ng-click="fetchSingleData(pro.id)" class="btn btn-warning btn-xs">Edit</button></td>
+				   <td><button type="button" ng-click="deleteData(pro.id)" class="btn btn-danger btn-xs">Delete</button></td>
 				</tr>
 			</tbody>
 		</table>
@@ -67,5 +71,8 @@ include '../lib/header.php';
     <div align="right">
 		<button type="button" name="add_button" ng-click="addData()" class="btn btn-success">Add</button>
 	</div>
+<?php
+}
+?>
 </body>
 </html>

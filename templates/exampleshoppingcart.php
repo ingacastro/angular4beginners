@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <?php
 $dir="../";
-include 'lib/header.php';
+include $dir.'lib/header.php';
 ?>
 <html >
 
@@ -29,10 +29,10 @@ include 'lib/header.php';
         <ul class="list-group text-center">
           <li class="col-xs-6 col-md-3 col-sm-3 col-lg-3 list-group-item" ng-repeat="product in products">
             <figure>
-              <img width="100" height="100" src="https://lh3.googleusercontent.com/-M_NiblLM-0A/Vh9eSY5LIeI/AAAAAAAAB_I/VBeV8X1V2HM/s144-Ic42/mac.jpg" />
+              <img width="100" height="100" src="{{product.image}}" />
               <figcaption>
-                  {{product.name}}  
-						                      <h3>{{product.price | currency}}</h3>
+					{{product.name}}  
+					<h3>{{product.price | currency}}</h3>
               </figcaption>
             </figure>
             <input class="btn btn-success" type="button" ng-click="addItemToCart(product)" value="BUY" />
@@ -42,8 +42,8 @@ include 'lib/header.php';
           <h1>CART-SHOW</h1>
           <ul class="list-group">
             <li class="list-group-item" ng-repeat="c in cart">
-              <h4>{{c.name}} |                <span style="color:blue"> {{c.count}} </span>
- | {{c.price*c.count | currency}}</h4>
+              <h4>{{c.name}} |  <span style="color:blue"> {{c.count}} </span>
+			  | {{c.price*c.count | currency}}</h4>
               <input class="btn btn-danger" type="button" ng-click="removeItemCart(c)" value="Remove" />
             </li>
           </ul>
