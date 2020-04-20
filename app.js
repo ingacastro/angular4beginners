@@ -81,8 +81,7 @@ app.controller('crudController', function($scope, $http){
 		var modal_popup = angular.element('#crudmodal');
 		modal_popup.modal('hide');
 	};
-	
-	
+		
    $scope.addData = function(){
 	  $scope.modalTitle = 'Add Product(s)';
 	  $scope.submit_button = 'Insert';
@@ -150,17 +149,45 @@ app.controller('crudController', function($scope, $http){
 			});
 		}
 	};
-
 });
 
 app.controller('indexController', function($scope, $http){
-	$scope.fetchData = function(){
-		$http.get('config/fetch_data.php').then(function(data){
-			
-			$scope.proData = data.data;
+	$scope.checkData = function(){
+		$http.get('../config/checkout.php').then(function(response){
+			$scope.chkData = response.data;
 		});
 	};
-	$scope.fetchData($scope, $http);
+	$scope.checkData($scope, $http);
+	
+	$scope.processData = function(id_invoke){
+		if(confirm("Are you sure you want to process it?")){
+			$http({
+				method:"POST",
+				url:"../config/process.php",
+				data:{
+					'id_invoke': id_invoke,
+					'action':'Process'
+					}
+			}).then(function(data){
+				$scope.checkData();
+			});
+		}
+	};
+	
+	$scope.deliveredData = function(id_invoke){
+		if(confirm("Are you sure you want to process it?")){
+			$http({
+				method:"POST",
+				url:"../config/process.php",
+				data:{
+					'id_invoke': id_invoke,
+					'action':'Delivered'
+					}
+			}).then(function(data){
+				$scope.checkData();
+			});
+		}
+	};
 });
 
 app.controller('StoreController', ['$scope','$cookies', '$http', function($scope, $cookies, $http){
