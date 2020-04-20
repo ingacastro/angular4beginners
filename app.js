@@ -154,6 +154,7 @@ app.controller('crudController', function($scope, $http){
 app.controller('indexController', function($scope, $http){
 	$scope.checkData = function(){
 		$http.get('../config/checkout.php').then(function(response){
+			console.log(response);
 			$scope.chkData = response.data;
 		});
 	};

@@ -13,6 +13,8 @@ include $dir.'lib/header.php';
 			  <tr>
 			   <th>Invoke</th>
 			   <th>Payment</th>
+			   <th>Name</th>
+			   <th>Address</th>
 			   <th>Process</th>
 			   <th>Delivered</th>
 			  </tr>
@@ -21,6 +23,8 @@ include $dir.'lib/header.php';
 				<tr ng-repeat="chk in chkData">
 					<td>{{chk.invoke_number}}</td>
 					<td>{{chk.payment_method}}</td>
+					<td>{{chk.first_name}}{{chk.last_name}}</td>
+					<td>{{chk.location}}</td>
 					<td ng-if="chk.process">
 						<div data-ng-if="chk.process == '1'">
 							In Process
