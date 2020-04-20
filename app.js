@@ -271,8 +271,7 @@ app.controller('StoreController', ['$scope','$cookies', '$http', function($scope
 				$scope.tot = tot;
 				$scope.invokeTitle = 'Invoke CheapMarket';
 				$scope.invoke_button = 'Accept';
-				//$scope.sub = 'submitAccept(cart, tot)';
-				$scope.sub = 'submitAccept()';
+				$scope.subm = 'submitAccept(cart, tot)';
 				$scope.cart = cart;
 				$scope.openInvoke('#invoke');
 				
@@ -281,36 +280,53 @@ app.controller('StoreController', ['$scope','$cookies', '$http', function($scope
 	};
 	
 	$scope.submitAccept = function(cart, tot){
-		$http({
-			method:"POST",
-			url:"config/insert.php",
-			data:{
-				'idUser': $scope.cart[0].idU,
-				'tot': tot,
-				'cart': $scope.cart,
-				'action': 'InvokeAccepted',
-			}
-		}).then(function(data){
-			$scope.tot = tot;
-			$scope.modalTitle = 'InvokeAccepted';
-			$scope.invoke_button = 'AcceptPay';
-			$scope.sub = 'submitAcceptPay()';
-			$scope.cart = cart;
-			$scope.invoke_number = data.data.invokenumber;
-			$scope.showAccepted = true;
-		});
-		
+		if($scope.invoke_button=='Accept'){
+			$http({
+				method:"POST",
+				url:"config/insert.php",
+				data:{
+					'idUser': $scope.cart[0].idU,
+					'tot': tot,
+					'cart': $scope.cart,
+					'action': 'InvokeAccepted',
+				}
+			}).then(function(data){
+				$scope.tot = tot;
+				$scope.invokeTitle = 'Payment CheapMarket';
+				$scope.invoke_button = 'Accept Pay';
+				$scope.sub = 'submitAcceptPay(cart)';
+				$scope.cart = cart;
+				$scope.invoke_number = data.data.invokenumber;
+				$scope.showAccepted = true;
+			});
+		}else if($scope.invoke_button=='Accept Pay'){
+			$http({
+				method:"POST",
+				url:"config/insert.php",
+				data:{
+					'idUser': $scope.cart[0].idU,
+					'invoke_number': $scope.invoke_number,
+					'payment': $scope.payment,
+					'action': 'PayAccepted',
+				}
+			}).then(function(data){
+				$scope.total = 0;
+				$scope.total2 = 0;
+				$scope.totalC = 0;
+				expireDate = new Date();
+				expireDate.setDate(expireDate.getDate() + 1);
+				$cookies.put('total', $scope.total,  {'expires': expireDate});
+				$scope.cart = [];
+				$cookies.putObject('cart', $scope.cart, {'expires': expireDate});
+				$scope.closeInvoke('#invoke');
+			});
+		}
 	};
 	
-	$scope.submitAcceptPay = function(){
-		/*$scope.total = 0;
-		$scope.total2 = 0;
-		$scope.totalC = 0;
-		expireDate = new Date();
-		expireDate.setDate(expireDate.getDate() + 1);
-		$cookies.put('total', $scope.total,  {'expires': expireDate});
-		$scope.cart = [];
-		$cookies.putObject('cart', $scope.cart, {'expires': expireDate});
+	$scope.submitAcceptPay = function(cart){
+		
+		alert('fsdf');
+		/*
 		*/
 	};
 	

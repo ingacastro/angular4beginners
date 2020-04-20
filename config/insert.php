@@ -117,7 +117,15 @@ if($form_data->action == 'Edit'){
 			$output['invokenumber'] = $invokeNumber;
 		}
 	}
-
+	echo json_encode($output);
+}elseif($form_data->action == 'PayAccepted'){
+	$q = "UPDATE invoke SET payment_method='".$form_data->payment."' WHERE invoke_number='".$form_data->invoke_number."'";
+	$statement = $connect->prepare($q);
+	if($statement->execute()){
+		$output['message'] = 'Payment Method Inserted!';
+		$output['invokenumber'] = $invokeNumber;
+	}
+	
 	echo json_encode($output);
 }
 ?>
