@@ -1,5 +1,135 @@
 var app = angular.module('sampleApp',['datatables', 'ngCookies']);
 
+
+
+app.controller('crudController', function($scope, $http){
+	$scope.fetchData = function(){
+		$http.get('../config/fetch_data.php').then(function(data){
+			$scope.proData = data.data;
+		});
+	};
+	$scope.fetchData($scope, $http);
+	
+	$scope.success = false;
+	$scope.error = false;
+	
+	$scope.openModal = function(){
+		var modal_popup = angular.element('#crudmodal');
+		modal_popup.modal('show');
+	};
+	
+	$scope.closeModal = function(){
+		var modal_popup = angular.element('#crudmodal');
+		modal_popup.modal('hide');
+	};
+		
+   $scope.addData = function(){
+	  $scope.modalTitle = 'Add Product(s)';
+	  $scope.submit_button = 'Insert';
+	  $scope.openModal();
+	  $scope.product_name = "";
+	  $scope.description = "";
+	  $scope.imagen = "";
+	  $scope.price = "";
+	};
+	
+	$scope.submitForm = function(){
+		$http({
+			method:"POST",
+			url:"../config/insert.php",
+			data:{
+				'product_name':$scope.product_name,
+				'description':$scope.description,
+				'action':$scope.submit_button,
+				'id':$scope.hidden_id
+				}
+		}).then(function(data){
+			//if(data.error != ''){
+			if(data.status != 200){
+				$scope.success = false;
+				$scope.error = true;
+				$scope.errorMessage = data.data.error;
+			}else{
+				$scope.success = true;
+				$scope.error = false;
+				$scope.successMessage = data.data.message;
+				$scope.form_data = {};
+				$scope.closeModal();
+				$scope.fetchData();
+			}
+		});
+	};
+	
+	$scope.fetchSingleData = function(id){
+		$http({
+			method:"POST",
+			url:"../config/insert.php",
+			data:{'id':id, 'action':'fetch_single_data'}
+		}).then(function(data){
+			$scope.product_name = data.data.product_name;
+			$scope.description = data.data.description;
+			$scope.hidden_id = id;
+			$scope.modalTitle = 'Edit Data';
+			$scope.submit_button = 'Edit';
+			$scope.openModal();
+		});
+	};
+		
+	$scope.deleteData = function(id){
+		if(confirm("Are you sure you want to remove it?")){
+			$http({
+				method:"POST",
+				url:"../config/insert.php",
+				data:{'id':id, 'action':'Delete'}
+			}).then(function(data){
+				$scope.success = true;
+				$scope.error = false;
+				$scope.successMessage = data.message;
+				$scope.fetchData();
+			});
+		}
+	};
+});
+
+app.controller('indexController', function($scope, $http){
+	$scope.checkData = function(){
+		$http.get('../config/checkout.php').then(function(response){
+			$scope.chkData = response.data;
+		});
+	};
+	$scope.checkData($scope, $http);
+	
+	$scope.processData = function(id_invoke){
+		if(confirm("Are you sure you want to process it?")){
+			$http({
+				method:"POST",
+				url:"../config/process.php",
+				data:{
+					'id_invoke': id_invoke,
+					'action':'Process'
+					}
+			}).then(function(data){
+				$scope.checkData();
+			});
+		}
+	};
+	
+	$scope.deliveredData = function(id_invoke){
+		if(confirm("Are you sure you want to process it?")){
+			$http({
+				method:"POST",
+				url:"../config/process.php",
+				data:{
+					'id_invoke': id_invoke,
+					'action':'Delivered'
+					}
+			}).then(function(data){
+				$scope.checkData();
+			});
+		}
+	};
+});
+
 app.controller('login_register_controller', function($scope, $http){
 	$scope.closeMsg = function(){
 		$scope.alertMsg = false;
@@ -60,134 +190,27 @@ app.controller('login_register_controller', function($scope, $http){
 	};
 });
 
-app.controller('crudController', function($scope, $http){
-	$scope.fetchData = function(){
-		$http.get('../config/fetch_data.php').then(function(data){
-			$scope.proData = data.data;
+app.controller('productController', function($scope, $http){
+	$scope.fetchInvoke = function(){
+		$http.get('../config/fetch_invoke.php?id='+id_user+'&pay='+pay).then(function(data){
+			$scope.proInvoke = data.data;
 		});
 	};
+	$scope.fetchInvoke($scope, $http);
 	
-	$scope.fetchData($scope, $http);
-	
-	$scope.success = false;
-	$scope.error = false;
-	
-	$scope.openModal = function(){
-		var modal_popup = angular.element('#crudmodal');
-		modal_popup.modal('show');
-	};
-	
-	$scope.closeModal = function(){
-		var modal_popup = angular.element('#crudmodal');
-		modal_popup.modal('hide');
-	};
-		
-   $scope.addData = function(){
-	  $scope.modalTitle = 'Add Product(s)';
-	  $scope.submit_button = 'Insert';
-	  $scope.openModal();
-	  $scope.product_name = "";
-	  $scope.description = "";
-	  $scope.imagen = "";
-	  $scope.price = "";
-	};
-	
-	$scope.submitForm = function(){
+		$scope.fetchSingleInvoke = function(id){
 		$http({
 			method:"POST",
 			url:"../config/insert.php",
-			data:{
-				'product_name':$scope.product_name,
-				'description':$scope.description,
-				'action':$scope.submit_button,
-				'id':$scope.hidden_id
-				}
-		}).then(function(data){
-			console.log(data);
-			//if(data.error != ''){
-			if(data.status != 200){
-				$scope.success = false;
-				$scope.error = true;
-				$scope.errorMessage = data.data.error;
-			}else{
-				$scope.success = true;
-				$scope.error = false;
-				$scope.successMessage = data.data.message;
-				$scope.form_data = {};
-				$scope.closeModal();
-				$scope.fetchData();
-			}
-		});
-	};
-	
-	$scope.fetchSingleData = function(id){
-		$http({
-			method:"POST",
-			url:"../config/insert.php",
-			data:{'id':id, 'action':'fetch_single_data'}
+			data:{'id':id, 'action':'fetch_single_invoke'}
 		}).then(function(data){
 			$scope.product_name = data.data.product_name;
 			$scope.description = data.data.description;
 			$scope.hidden_id = id;
-			$scope.modalTitle = 'Edit Data';
+			$scope.modalTitle = 'Invoke Details';
 			$scope.submit_button = 'Edit';
 			$scope.openModal();
 		});
-	};
-		
-	$scope.deleteData = function(id){
-		if(confirm("Are you sure you want to remove it?")){
-			$http({
-				method:"POST",
-				url:"../config/insert.php",
-				data:{'id':id, 'action':'Delete'}
-			}).then(function(data){
-				$scope.success = true;
-				$scope.error = false;
-				$scope.successMessage = data.message;
-				$scope.fetchData();
-			});
-		}
-	};
-});
-
-app.controller('indexController', function($scope, $http){
-	$scope.checkData = function(){
-		$http.get('../config/checkout.php').then(function(response){
-			console.log(response);
-			$scope.chkData = response.data;
-		});
-	};
-	$scope.checkData($scope, $http);
-	
-	$scope.processData = function(id_invoke){
-		if(confirm("Are you sure you want to process it?")){
-			$http({
-				method:"POST",
-				url:"../config/process.php",
-				data:{
-					'id_invoke': id_invoke,
-					'action':'Process'
-					}
-			}).then(function(data){
-				$scope.checkData();
-			});
-		}
-	};
-	
-	$scope.deliveredData = function(id_invoke){
-		if(confirm("Are you sure you want to process it?")){
-			$http({
-				method:"POST",
-				url:"../config/process.php",
-				data:{
-					'id_invoke': id_invoke,
-					'action':'Delivered'
-					}
-			}).then(function(data){
-				$scope.checkData();
-			});
-		}
 	};
 });
 
@@ -199,8 +222,6 @@ app.controller('StoreController', ['$scope','$cookies', '$http', function($scope
 	};
 	$scope.fetchData($scope, $http);
 	
-	
-	//$scope.products = productsData;
 	$scope.cart = [];
 	$scope.total = parseFloat(0);
 	$scope.total2 = parseFloat(0);
@@ -302,7 +323,6 @@ app.controller('StoreController', ['$scope','$cookies', '$http', function($scope
 				$scope.subm = 'submitAccept(cart, tot)';
 				$scope.cart = cart;
 				$scope.openInvoke('#invoke');
-				
 			});
 		}
 	};
@@ -319,6 +339,7 @@ app.controller('StoreController', ['$scope','$cookies', '$http', function($scope
 					'action': 'InvokeAccepted',
 				}
 			}).then(function(data){
+				console.log(data);
 				$scope.tot = tot;
 				$scope.invokeTitle = 'Payment CheapMarket';
 				$scope.invoke_button = 'Accept Pay';
@@ -335,6 +356,7 @@ app.controller('StoreController', ['$scope','$cookies', '$http', function($scope
 					'idUser': $scope.cart[0].idU,
 					'invoke_number': $scope.invoke_number,
 					'payment': $scope.payment,
+					'total': $scope.tot,
 					'action': 'PayAccepted',
 				}
 			}).then(function(data){
@@ -381,25 +403,4 @@ app.controller('StoreController', ['$scope','$cookies', '$http', function($scope
 	};
 }]);
 
-	/*var productsData = [{
-		id: 1,
-		name: 'product1',
-		price: 100.0,
-		image: '../img/cocosette.jpg'
-	},{
-		id: 2,
-		name: 'product2',
-		price: 14.5,
-		image: '../img/susy.jpg'
-	},{
-		id: 3,
-		name: 'product3',
-		price: 100.43,
-		image: '../img/toddy.jpg'
-	},{
-		id: 4,
-		name: 'product4',
-		price: 99.9,
-		image: '../img/pirulin.jpg'
-	}];
-	*/
+

@@ -16,7 +16,6 @@ echo "<script>
 $dir="";
 include $dir.'lib/header.php';
 ?>
-
 <body ng-app="sampleApp">
 <br />
 <div class="container" ng-controller="StoreController">
