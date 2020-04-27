@@ -96,6 +96,17 @@ switch($form_data->action){
 		}
 	break;
 	
+	case 'fetch_single_invoke':
+		$query = "SELECT * FROM invoke WHERE invoke_number='".$form_data->invoke_number."'";
+		$statement = $connect->prepare($query);
+		$statement->execute();
+		$result = $statement->fetchAll();
+		foreach($result as $row){
+			$output['invoke_number'] = $row['invoke_number'];
+			$output['first_name'] = $row['invoke_number'];
+		}
+	break;
+	
 	case 'Invoke':
 		$query = "SELECT * FROM users WHERE id=".$form_data->id;
 		$statement = $connect->prepare($query);

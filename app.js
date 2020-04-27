@@ -198,19 +198,24 @@ app.controller('productController', function($scope, $http){
 	};
 	$scope.fetchInvoke($scope, $http);
 	
-		$scope.fetchSingleInvoke = function(id){
+	$scope.fetchSingleInvoke = function(id){
 		$http({
 			method:"POST",
 			url:"../config/insert.php",
-			data:{'id':id, 'action':'fetch_single_invoke'}
+			data:{'invoke_number':id, 'action':'fetch_single_invoke'}
 		}).then(function(data){
-			$scope.product_name = data.data.product_name;
-			$scope.description = data.data.description;
-			$scope.hidden_id = id;
-			$scope.modalTitle = 'Invoke Details';
+			$scope.invoke_number = data.data.invoke_number;
+			$scope.first_name = data.data.first_name;
+			$scope.invokeTitle = 'Invoke CheapMarket';
+			$scope.invoke_button = 'Accept';
 			$scope.submit_button = 'Edit';
-			$scope.openModal();
+			$scope.openInvoke('#invoke');
 		});
+	};
+	
+	$scope.openInvoke = function(invoke){
+		var modal_popup = angular.element(invoke);
+		modal_popup.modal('show');
 	};
 });
 
@@ -379,6 +384,7 @@ app.controller('StoreController', ['$scope','$cookies', '$http', function($scope
 		/*
 		*/
 	};
+	
 	
 	$scope.openInvoke = function(invoke){
 		var modal_popup = angular.element(invoke);

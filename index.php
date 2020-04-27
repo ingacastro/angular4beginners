@@ -137,7 +137,6 @@ include $dir.'lib/header.php';
 			</div>
 		</div>
 	</div>
-</div>
 
 <!--modal pay -->
 	<div id="pay" class="modal fade" role="dialog">
